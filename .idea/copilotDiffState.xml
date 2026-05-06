@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/evaluate.py">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/evaluate.py" />
+              <option name="updatedContent" value="import tensorflow as tf&#10;from tensorflow.keras.preprocessing.image import ImageDataGenerator&#10;from sklearn.metrics import classification_report, confusion_matrix&#10;import numpy as np&#10;import os&#10;&#10;# Data directory&#10;data_dir = 'data'&#10;test_dir = os.path.join(data_dir, 'test')&#10;&#10;# Image parameters&#10;img_height, img_width = 224, 224&#10;batch_size = 32&#10;&#10;# Load test data&#10;test_datagen = ImageDataGenerator(rescale=1./255)&#10;test_generator = test_datagen.flow_from_directory(&#10;    test_dir,&#10;    target_size=(img_height, img_width),&#10;    batch_size=batch_size,&#10;    class_mode='binary',&#10;    shuffle=False&#10;)&#10;&#10;# Load model&#10;model = tf.keras.models.load_model('models/deepfake_detector.h5')&#10;&#10;# Evaluate&#10;loss, accuracy = model.evaluate(test_generator)&#10;print(f'Test Loss: {loss}')&#10;print(f'Test Accuracy: {accuracy}')&#10;&#10;# Predictions&#10;predictions = model.predict(test_generator)&#10;predicted_classes = (predictions &gt; 0.5).astype(int).flatten()&#10;&#10;# True labels&#10;true_classes = test_generator.classes&#10;&#10;# Classification report&#10;print(classification_report(true_classes, predicted_classes, target_names=['Real', 'Fake']))&#10;&#10;# Confusion matrix&#10;cm = confusion_matrix(true_classes, predicted_classes)&#10;print('Confusion Matrix:')&#10;print(cm)" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/model.py">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/model.py" />
+              <option name="updatedContent" value="import tensorflow as tf&#10;from tensorflow.keras.applications import ResNet50&#10;from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout&#10;from tensorflow.keras.models import Model&#10;&#10;def build_model(input_shape=(224, 224, 3)):&#10;    &quot;&quot;&quot;&#10;    Build a deepfake detection model using ResNet50 as base.&#10;    &quot;&quot;&quot;&#10;    base_model = ResNet50(weights='imagenet', include_top=False, input_shape=input_shape)&#10;    &#10;    x = base_model.output&#10;    x = GlobalAveragePooling2D()(x)&#10;    x = Dense(1024, activation='relu')(x)&#10;    x = Dropout(0.5)(x)&#10;    predictions = Dense(1, activation='sigmoid')(x)  # Binary classification&#10;    &#10;    model = Model(inputs=base_model.input, outputs=predictions)&#10;    &#10;    # Freeze base layers for transfer learning&#10;    for layer in base_model.layers:&#10;        layer.trainable = False&#10;    &#10;    return model" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/requirements.txt">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/requirements.txt" />
+              <option name="updatedContent" value="tensorflow&#10;opencv-python&#10;scikit-learn&#10;numpy&#10;matplotlib&#10;pandas&#10;Pillow" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/train.py">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/train.py" />
+              <option name="updatedContent" value="import tensorflow as tf&#10;from tensorflow.keras.preprocessing.image import ImageDataGenerator&#10;from model import build_model&#10;import os&#10;&#10;# Data directories&#10;data_dir = 'data'&#10;train_dir = os.path.join(data_dir, 'train')&#10;val_dir = os.path.join(data_dir, 'val')&#10;&#10;# Image parameters&#10;img_height, img_width = 224, 224&#10;batch_size = 32&#10;&#10;# Data augmentation for training&#10;train_datagen = ImageDataGenerator(&#10;    rescale=1./255,&#10;    rotation_range=20,&#10;    width_shift_range=0.2,&#10;    height_shift_range=0.2,&#10;    shear_range=0.2,&#10;    zoom_range=0.2,&#10;    horizontal_flip=True,&#10;    fill_mode='nearest'&#10;)&#10;&#10;val_datagen = ImageDataGenerator(rescale=1./255)&#10;&#10;# Load datasets&#10;train_generator = train_datagen.flow_from_directory(&#10;    train_dir,&#10;    target_size=(img_height, img_width),&#10;    batch_size=batch_size,&#10;    class_mode='binary'&#10;)&#10;&#10;val_generator = val_datagen.flow_from_directory(&#10;    val_dir,&#10;    target_size=(img_height, img_width),&#10;    batch_size=batch_size,&#10;    class_mode='binary'&#10;)&#10;&#10;# Build model&#10;model = build_model(input_shape=(img_height, img_width, 3))&#10;&#10;# Compile model&#10;model.compile(optimizer='adam',&#10;              loss='binary_crossentropy',&#10;              metrics=['accuracy'])&#10;&#10;# Train model&#10;epochs = 10&#10;history = model.fit(&#10;    train_generator,&#10;    steps_per_epoch=train_generator.samples // batch_size,&#10;    validation_data=val_generator,&#10;    validation_steps=val_generator.samples // batch_size,&#10;    epochs=epochs&#10;)&#10;&#10;# Save model&#10;model.save('models/deepfake_detector.h5')&#10;&#10;print(&quot;Training completed and model saved.&quot;)" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
