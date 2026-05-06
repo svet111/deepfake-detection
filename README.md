@@ -35,3 +35,7 @@ This project implements a deepfake detection system for photos using a Convoluti
 For photo-specific datasets, you can extract frames from video datasets or use image forgery datasets like CASIA: http://forensics.idealtest.org/
 
 Ensure to follow licensing and ethical guidelines when using these datasets.
+
+## Status
+This project provides a full pipeline for deepfake detection (training + evaluation), 
+but due to hardware constraints, full-scale training on large datasets was not performed.
