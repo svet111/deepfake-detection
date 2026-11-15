@@ -34,7 +34,7 @@ deepfake-detection/
 
 1. Clone the repository and navigate into the project directory:
 ```bash
-git clone [https://github.com/svet111/deepfake-detection.git](https://github.com/svet111/deepfake-detection.git)
+git clone [https://github.com/svet111/deepfake-detection.git]
 cd deepfake-detection
 ```
 
